@@ -1,0 +1,8 @@
+name: intbar-bonger-env
+channels:
+  - defaults
+dependencies:
+  - python=3.11.7
+  - conda-forge::tk
+  - conda-forge::reportlab
+prefix: /home/eivind/programs/miniconda3/envs/intbar-bonger-env
