@@ -5,80 +5,86 @@ import Math
 import random
 
 # TODO: Restructure as class with instance variables instead of everything being passed around
+class bong_generator:
 
-used_control_numbers = []
-
-def get_next_series():
-    # TODO:
-    # return the next letter that is not in use in the output folder. 
-    pass
-
-def get_expiration_date():
-    current_time = datetime.now()
-    expiration_date = current_time + timedelta(days=365)
-    return expiration_date.strftime("%d-%m-%Y")
-
-def generate_pdf(
+    def __init__(self,
         count = 50,
-        series = get_next_series(),
+        series = "A",
         value = 65, # Verdi i kr
-        expiration = get_expiration_date()
-        ):
-    """ TODO:
-        Generate each bong as a tuple with name {Series}{Number} and controlnumber.
-        Generate all the pages necessary in a loop.
-        Front -> Back -> Check -> Front etc.
+        expiration = datetime.now() ):
 
-        Use specific methods for each of the smaller functions to make debugging
-        and maintenance easier.
-    """
+        self.used_control_numbers = []
+        self.count = count
+        self.series = series if series == "A" else self.get_next_series()
+        self.value = value
+        self.expiration = expiration if not expiration == datetime.now else self.get_expiration_date()
 
-    bongs = generate_bongs(count, series, value, expiration)
+    def get_next_series(self):
+        # TODO:
+        # return the next letter that is not in use in the output folder. 
+        pass
 
-    page_count = Math.ceil(count / 50)
+    def get_expiration_date(self):
+        current_time = datetime.now()
+        expiration_date = current_time + timedelta(days=365)
+        return expiration_date.strftime("%d-%m-%Y")
 
-    for _ in range(page_count):
-        generate_front_page(bongs)
-        generate_back_page(bongs)
+    def generate_pdf(self):
+        """ TODO:
+            Generate each bong as a tuple with name {Series}{Number} and controlnumber.
+            Generate all the pages necessary in a loop.
+            Front -> Back -> Check -> Front etc.
 
-    generate_checking_page(bongs)
+            Use specific methods for each of the smaller functions to make debugging
+            and maintenance easier.
+        """
 
-def generate_bongs(count, series, value, expiration):
-    bongs = []
-    for i in range(count):
-        control_number = get_control_number()
-        bong = {
-                "id": (series + str(i+1), control_number),
-                "value": value,
-                "expiration": expiration
-                }
-        bongs.append(bong)
+        bongs = self.generate_bongs()
 
-    return bongs
+        page_count = Math.ceil(count / 50)
 
-def get_control_number():
-    control_number = ''.join([str(random.randint(0, 9)) for _ in range(5)])
-    used_control_numbers.append(control_number)
-    return control_number
+        for _ in range(page_count):
+            self.generate_front_page(bongs)
+            self.generate_back_page(bongs)
 
-def generate_front_page(bongs):
-    if len(bongs) > 50:
-        print("Received more than 50 bongs in generate_front_page. Aborting...")
-    for i, bong in enumerate(bongs):
-        draw_bong_front(bong, i)
+        self.generate_checking_page(bongs)
 
-def generate_back_page(bongs):
-    if len(bongs) > 50:
-        print("Received more than 50 bongs in generate_back_page. Aborting...")
-    for i, bong in enumerate(bongs):
-        draw_bong_back(bong, i)
+    def generate_bongs(self):
+        bongs = []
+        for i in range(self.count):
+            control_number = self.get_control_number()
+            bong = {
+                    "id": (self.series + str(i+1), control_number),
+                    "value": self.value,
+                    "expiration": self.expiration
+                    }
+            bongs.append(bong)
 
-def generate_checking_page(bongs):
-    pass
+        return bongs
 
-def draw_bong_front(bong, i):
-    pass
+    def get_control_number(self):
+        control_number = ''.join([str(random.randint(0, 9)) for _ in range(5)])
+        self.used_control_numbers.append(control_number)
+        return control_number
 
-def draw_bong_back(bong, i):
-    pass
+    def generate_front_page(self, bongs):
+        if len(bongs) > 50:
+            print("Received more than 50 bongs in generate_front_page. Aborting...")
+        for i, bong in enumerate(bongs):
+            self.draw_bong_front(bong, i)
+
+    def generate_back_page(self, bongs):
+        if len(bongs) > 50:
+            print("Received more than 50 bongs in generate_back_page. Aborting...")
+        for i, bong in enumerate(bongs):
+            self.draw_bong_back(bong, i)
+
+    def generate_checking_page(self, bongs):
+        pass
+
+    def draw_bong_front(self, bong, i):
+        pass
+
+    def draw_bong_back(self, bong, i):
+        pass
 
