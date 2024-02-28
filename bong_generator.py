@@ -1,33 +1,35 @@
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
+# from reportlab.pdfgen import canvas
+# from reportlab.lib.pagesizes import letter
 from datetime import datetime, timedelta
-import Math
+import math
 import random
 
 # TODO: Restructure as class with instance variables instead of everything being passed around
-class bong_generator:
+class BongGenerator:
 
     def __init__(self,
         count = 50,
         series = "A",
         value = 65, # Verdi i kr
-        expiration = datetime.now() ):
+        expiration = None):
 
         self.used_control_numbers = []
         self.count = count
-        self.series = series if series == "A" else self.get_next_series()
+        self.series = "A" if series == "A" else self.get_next_series()
         self.value = value
-        self.expiration = expiration if not expiration == datetime.now else self.get_expiration_date()
+        if expiration == None:
+            self.expiration = self.get_time_in_1_year(datetime.now())
+        else:
+            self.expiration = expiration
 
     def get_next_series(self):
         # TODO:
         # return the next letter that is not in use in the output folder. 
         pass
 
-    def get_expiration_date(self):
-        current_time = datetime.now()
-        expiration_date = current_time + timedelta(days=365)
-        return expiration_date.strftime("%d-%m-%Y")
+    def get_time_in_1_year(self, current_time = datetime.now()):
+        in_one_year = current_time + timedelta(days=365)
+        return in_one_year.strftime("%d-%m-%Y")
 
     def generate_pdf(self):
         """ TODO:
@@ -41,7 +43,7 @@ class bong_generator:
 
         bongs = self.generate_bongs()
 
-        page_count = Math.ceil(count / 50)
+        page_count = math.ceil(self.count / 50)
 
         for _ in range(page_count):
             self.generate_front_page(bongs)
