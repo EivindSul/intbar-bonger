@@ -1,5 +1,5 @@
-# from reportlab.pdfgen import canvas
-# from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
 from datetime import datetime, timedelta
 import math
 import random
@@ -44,12 +44,54 @@ class BongGenerator:
         bongs = self.generate_bongs()
 
         page_count = math.ceil(self.count / 50)
+        # TODO: Change 300 to be whatever the size limit of a checking page is
+        checking_page_count = math.ceil(self.count / 300) 
 
+
+
+
+        # TODO: slice bongs list to create only 50 in each
+
+        c = canvas.Canvas(f"serie-{self.series}.pdf", pagesize=A4)
         for _ in range(page_count):
-            self.generate_front_page(bongs)
-            self.generate_back_page(bongs)
+            c = self.generate_front_page(c, bongs)
+            c = self.generate_back_page(c, bongs)
 
-        self.generate_checking_page(bongs)
+        # TODO: Make it conform to the checking page size limit
+        for _ in range(checking_page_count):
+            c = self.generate_checking_page(c, bongs)
+
+        """
+        PSEUDO:
+            Create canvas
+            Create front page:
+                for bong in bongs:
+                    draw bong
+                    c.translate
+
+            Create back page:
+                for bong in bongs:
+                    draw bong
+                    c.translate
+
+            Create page 3
+            Draw all bongs in order in table
+
+            save pdf
+
+            What do bongs need to draw?
+            Position
+            Position is determined by the number of rows and columns, as well as the size of the canvas.
+            Canvas has pagesize A4.
+            I want bongs to have a margin of 0.5cm in height, and 1cm in width, including the edge of the paper.
+            50 bongs is 5*10. 
+            The width of each bong is the width of A4 (297mm) minus 6 margins of 1cm divided by 5. 
+            This is 47.4.
+            The height of each bong is the height of A4 (210mm) minus 11 margins of 0.5cm divided by 10. 
+            This is 15.5mm.
+
+            Each bong is approximately 47.4 * 15.5
+        """
 
     def generate_bongs(self):
         bongs = []
@@ -69,24 +111,28 @@ class BongGenerator:
         self.used_control_numbers.append(control_number)
         return control_number
 
-    def generate_front_page(self, bongs):
+    def generate_front_page(self, c, bongs):
         if len(bongs) > 50:
             print("Received more than 50 bongs in generate_front_page. Aborting...")
         for i, bong in enumerate(bongs):
-            self.draw_bong_front(bong, i)
+            c = self.draw_bong_front(c, bong)
 
-    def generate_back_page(self, bongs):
+        return c
+
+    def generate_back_page(self, bongs, c):
         if len(bongs) > 50:
             print("Received more than 50 bongs in generate_back_page. Aborting...")
         for i, bong in enumerate(bongs):
-            self.draw_bong_back(bong, i)
+            c = self.draw_bong_back(c, bong)
 
-    def generate_checking_page(self, bongs):
-        pass
+        return c
 
-    def draw_bong_front(self, bong, i):
-        pass
+    def generate_checking_page(self, c, bongs):
+        return c
 
-    def draw_bong_back(self, bong, i):
-        pass
+    def draw_bong_front(self, c, bong):
+        return c
+
+    def draw_bong_back(self, c, bong):
+        return c
 
