@@ -1,85 +1,101 @@
 # Simple file to learn and test functionality of reportlab
+from reportlab.lib.utils import ImageReader
+from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 
-def draw_red_rectangles(pdf_file_path):
-    # Create a canvas
-    c = canvas.Canvas(pdf_file_path, pagesize=A4)
+pdf_path = "littbong.pdf"
+c = canvas.Canvas(pdf_path, pagesize=A4)
 
-    cm = A4[0] / 21.0
-    margin_x = 1 * cm
-    margin_y = 0.5 * cm
+cm = A4[0] / 21.0
+margin_y = 1 * cm
+margin_x = 0.5 * cm
 
-    # Set the border color to red
-    border_color = (0.7, 0, 0)
+dark_red = (0.7, 0, 0)
+black = (0, 0, 0)
+white = (1, 1, 1)
 
-    # Set the fill color to white
-    fill_color = (1, 1, 1)
+line_width = 1
 
-    # Set the line width for the border
-    line_width = 1
+bong_count_x = 10
+bong_count_y = 5
 
-    bong_width = 1.55 * cm
-    bong_height = 4.74 * cm
+bong_size_x = 45
+bong_size_y = 155
 
-    # Draw the first red rectangle with a red border
-    c.setStrokeColorRGB(*border_color)
-    c.setFillColorRGB(*fill_color)
+margin_x = (A4[0] - (bong_size_x * bong_count_x)) / (bong_count_x + 1)
+margin_y = (A4[1] - (bong_size_y * bong_count_y)) / (bong_count_y + 1)
+
+id_box_size = 15 # Size of the rounded off part at the end of the bong
+
+logo = ImageReader("assets/intbar-logo.png")
+logo_scale_factor = 0.12
+logo_size_x = logo.getSize()[0] * logo_scale_factor
+logo_size_y = logo.getSize()[1] * logo_scale_factor
+
+def draw_bongs():
+
+    c.setStrokeColorRGB(*dark_red)
+    c.setFillColorRGB(*white)
     c.setLineWidth(line_width)
-    c.translate(margin_y, 0)
-    # c.roundRect(0, 0, bong_width, bong_height, 5, fill=True)
-    # c.rect(0, 15, bong_width, bong_height - 30, fill=True)
-    text_color = (0, 0, 0)
+    c.translate(margin_x, margin_y)
 
-    for row in range(5):
+    for row in range(bong_count_y):
         c.saveState()
-        c.translate(0, row*(bong_height + margin_x) + margin_y)
-        for _ in range(10):
-            c.setFillColorRGB(*fill_color)
-            c.roundRect(0, 0, bong_width, bong_height, 5, fill=True)
-            c.rect(0, 15, bong_width, bong_height - 30, fill=True)
-
-            # Write text
-            c.saveState()
-            c.setFillColorRGB(*text_color)
-            c.setFont("Helvetica-Bold", 15)
-            c.drawCentredString(0, 0, ".")
-            c.rotate(90)
-            c.setFont("Helvetica-Bold", 12)
-            c.drawString(50, -15, "Integerbar")
-            c.setFont("Helvetica", 8)
-            c.drawString(30, -25, "Verdi: 65kr")
-            c.drawString(20, -35, "Gyldig til: 29-02-2024")
-            c.rotate(90)
-            c.setFont("Helvetica", 12)
-            c.drawString(-35, -12, "A001")
-            c.translate(bong_height - 4, bong_width - 15)
-            c.rotate(180)
-            c.setFont("Helvetica-Bold", 15)
-            c.drawCentredString(0, 0, ".")
-            c.setFont("Helvetica", 12)
-            c.drawString(-35, -12, "A001")
-            # c.rotate(180)
-            # c.drawString(0, 0, "A001")
-            c.restoreState()
-
-            c.translate(bong_width + margin_y, 0)
+        c.translate(0, row * (bong_size_y + margin_y))
+        for _ in range(bong_count_x):
+            draw_bong_front(c)
+            c.translate(margin_x + bong_size_x, 0)
         c.restoreState()
 
+    c.showPage()
 
-    # Draw rotated text inside the first rectangle
-    # c.translate(125, 525)
-    # c.rotate(rotation_angle)
-    # c.setFillColorRGB(*text_color)
-    # c.drawString(0, 0, "Tekst 1")
+    c.setStrokeColorRGB(*dark_red)
+    c.setFillColorRGB(*white)
+    c.setLineWidth(line_width)
+    c.translate(margin_x, margin_y)
 
-    # Reset the rotation for the second rectangle
+    for row in range(bong_count_y):
+        c.saveState()
+        c.translate(0, row * (bong_size_y + margin_y))
+        for _ in range(bong_count_x):
+            draw_bong_back(c)
+            c.translate(margin_x + bong_size_x, 0)
+        c.restoreState()
 
-    # Save the PDF file
     c.save()
 
-# Specify the path where you want to save the PDF
-pdf_path = "red_rectangles_updated.pdf"
 
-# Call the function to draw red rectangles and save the PDF
-draw_red_rectangles(pdf_path)
+def draw_bong_front(c):
+    c.roundRect(0, 0, bong_size_x, bong_size_y, 5)
+    c.rect(0, id_box_size, bong_size_x, bong_size_y - 2 * id_box_size)
+    # Write text
+    c.saveState()
+    c.setFillColorRGB(*black)
+    c.translate(bong_size_x / 2, bong_size_y / 2)
+    c.rotate(90)
+    c.setFont("Helvetica-Bold", 12)
+    c.drawCentredString(5 + (logo_size_x / 2), 7, "Integrerbar")
+    c.drawImage(logo, -37, 7, logo_size_x, logo_size_y, mask=[0,0,0,0,0,0])
+    c.setFont("Helvetica", 8)
+    c.drawCentredString(0, -8, "Verdi: 65kr")
+    c.drawCentredString(0, -18, "Gyldig til: 29-02-2024")
+    c.rotate(90)
+    c.setFont("Helvetica", 12)
+    c.drawCentredString(0, (bong_size_y / 2) - 12, "A001")
+    c.rotate(180)
+    c.drawCentredString(0, (bong_size_y / 2) - 12, "A001")
+    c.restoreState()
+
+def draw_bong_back(c):
+    c.roundRect(0, 0, bong_size_x, bong_size_y, 5)
+    # Write text
+    c.saveState()
+    c.setFillColorRGB(*black)
+    c.translate(bong_size_x / 2, bong_size_y / 2)
+    c.rotate(90)
+    c.setFont("Helvetica-Bold", 16)
+    c.drawCentredString(0, -6, "A001-10101")
+    c.restoreState()
+
+draw_bongs()
