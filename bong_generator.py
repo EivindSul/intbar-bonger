@@ -117,6 +117,9 @@ class BongGenerator:
             c.saveState()
             c.translate(0, row * (bong_size_y + margin_y))
             for _ in range(bong_count_x):
+                if bong_counter == len(bongs):
+                    break
+
                 self.draw_bong_front(c, bongs[bong_counter])
                 c.translate(margin_x + bong_size_x, 0)
                 bong_counter += 1
@@ -132,14 +135,17 @@ class BongGenerator:
         c.setStrokeColorRGB(*dark_red)
         c.setFillColorRGB(*white)
         c.setLineWidth(line_width)
-        c.translate(margin_x, margin_y)
+        c.translate(A4[0] - margin_x, margin_y)
 
         for row in range(bong_count_y):
             c.saveState()
             c.translate(0, row * (bong_size_y + margin_y))
+            c.translate( - bong_size_x, 0)
             for _ in range(bong_count_x):
+                if bong_counter == len(bongs):
+                    break
                 self.draw_bong_back(c, bongs[bong_counter])
-                c.translate(margin_x + bong_size_x, 0)
+                c.translate( - (margin_x + bong_size_x), 0)
                 bong_counter += 1
             c.restoreState()
 
