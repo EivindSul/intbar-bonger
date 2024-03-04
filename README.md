@@ -8,8 +8,11 @@ For nå brukes programmet kun i terminal.
 
 Begynn med å klone prosjektet med git.
 ```bash
+# Klon prosjektet
 git clone git@github.com:EivindSul/intbar-bonger.git
 
+# Gå til mappen
+cd intbar-bonger
 ```
 Programmet bruker reportlab. Installer det gjennom pip eller conda. 
 
@@ -27,9 +30,6 @@ Installer conda. Jeg anbefaler [miniconda](https://conda.io/projects/conda/en/la
 
 Aktiver conda environment for å installere de nødvendige pakkene.
 ```bash
-# Gå til mappen
-cd intbar-bonger
-
 # Aktiver environment
 conda env create -f environment.yml
 conda activate intbar-bonger-env
