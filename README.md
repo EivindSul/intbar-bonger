@@ -45,7 +45,7 @@ python intbar-bonger.py
 ```
 Programmet gir en gjennomgang av de forskjellige feltene på bongen.
 Om du lar feltet stå tomt, så bruker det standardverdiene som står beskrevet når du kjører programmet.
-VÆr obs på at enkelte input kan få bongene til å se stygge ut, for eksempel at "serie" blir mer enn tre tegn langt.
+Vær obs på at enkelte input kan få bongene til å se stygge ut, for eksempel at "serie" blir mer enn tre tegn langt.
 
 Bongene blir lagret som en pdf-fil i samme mappe.
 
