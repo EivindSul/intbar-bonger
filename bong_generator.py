@@ -21,6 +21,8 @@ bong_count_y = 5
 bong_size_x = 45
 bong_size_y = 155
 
+box_size = (A4[1] - 2 * margin_y) / 20
+
 margin_x = (A4[0] - (bong_size_x * bong_count_x)) / (bong_count_x + 1)
 margin_y = (A4[1] - (bong_size_y * bong_count_y)) / (bong_count_y + 1)
 
@@ -36,12 +38,14 @@ class BongGenerator:
     def __init__(self,
         count = 50,
         series = "A",
-        value = 65, # Verdi i kr
+        description = "Integrerbar arrangementer",
+        value = 65, 
         expiration = None):
 
         self.used_control_numbers = []
         self.count = count
         self.series = series
+        self.description = description
         self.value = value
         if expiration == None:
             self.expiration = self.get_time_in_1_year(datetime.now())
@@ -54,35 +58,32 @@ class BongGenerator:
         return in_one_year.strftime("%d-%m-%Y")
 
     def generate_pdf(self):
-        """ TODO:
-            Generate each bong as a tuple with name {Series}{Number} and controlnumber.
-            Generate all the pages necessary in a loop.
-            Front -> Back -> Check -> Front etc.
-
-            Use specific methods for each of the smaller functions to make debugging
-            and maintenance easier.
+        """ 
+            TODO: documentation
         """
 
-        bongs = self.generate_bongs()
+        all_bongs = self.generate_bongs()
+        bongs = [all_bongs[i:i+50] for i in range(0, len(all_bongs), 50)]
+        checking_bongs = [all_bongs[i:i+200] for i in range(0, len(all_bongs), 200)]
 
         page_count = math.ceil(self.count / 50)
-        # TODO: Change 200 to be whatever the size limit of a checking page is
         checking_page_count = math.ceil(self.count / 200) 
 
-        # TODO: slice bongs list to create only 50 in each
-
         c = canvas.Canvas(f"serie-{self.series}.pdf", pagesize=A4)
-        for _ in range(page_count):
-            c = self.generate_front_page(c, bongs)
+        for i in range(page_count):
+            c = self.generate_front_page(c, bongs[i])
             c.showPage()
-            c = self.generate_back_page(c, bongs)
+            c = self.generate_back_page(c, bongs[i])
             c.showPage()
 
-        # TODO: Make it conform to the checking page size limit
-        for _ in range(checking_page_count):
-            c = self.generate_checking_page(c, bongs)
+        for i in range(checking_page_count):
+            c = self.generate_checking_page(c, checking_bongs[i])
+            c.showPage()
 
         c.save()
+
+        # except Exception as e:
+        #     print(f"An error occured:\n{e}")
 
     def generate_bongs(self):
         bongs = []
@@ -106,7 +107,7 @@ class BongGenerator:
     def generate_front_page(self, c, bongs):
         bong_counter = 0
         if len(bongs) > 50:
-            print("Received more than 50 bongs in generate_front_page. Aborting...")
+            raise ValueError("Received more than 50 bongs in generate_front_page. Aborting...")
 
         c.setStrokeColorRGB(*dark_red)
         c.setFillColorRGB(*white)
@@ -130,7 +131,7 @@ class BongGenerator:
     def generate_back_page(self, c, bongs):
         bong_counter = 0
         if len(bongs) > 50:
-            print("Received more than 50 bongs in generate_back_page. Aborting...")
+            raise ValueError("Received more than 50 bongs in generate_back_page. Aborting...")
 
         c.setStrokeColorRGB(*dark_red)
         c.setFillColorRGB(*white)
@@ -152,6 +153,42 @@ class BongGenerator:
         return c
 
     def generate_checking_page(self, c, bongs):
+        bong_counter = 0
+
+        if len(bongs) > 200:
+            raise ValueError("Received more than 200 bongs in generate_checking_page. Aborting...")
+
+        c.setStrokeColorRGB(*black)
+        c.setFillColorRGB(*black)
+        c.setLineWidth(line_width)
+        c.rotate(90)
+        c.translate(2 * margin_x, -4 * margin_y)
+        c.setFont("Helvetica", 20)
+        c.drawString(0, 0, f"{self.description}")
+        c.drawString(0, -30, f"Bongserie: {self.series}")
+
+        c.saveState()
+        c.translate(A4[1] / 2, 0)
+        c.rotate(-90)
+        c.translate(-10, 0)
+        self.draw_bong_front(c, bongs[0])
+        c.translate(0, bong_size_y + 2 * margin_y)
+        self.draw_bong_back(c, bongs[0])
+        c.restoreState()
+
+        c.translate(0, -6 * margin_y)
+
+        for row in range(math.ceil(len(bongs) / 20)):
+            c.saveState()
+            c.translate(0, - row * box_size)
+            for _ in range(20):
+                if bong_counter == len(bongs):
+                    break
+                self.draw_checking_page_tile(c, bongs[bong_counter])
+                c.translate(box_size, 0)
+                bong_counter += 1
+            c.restoreState()
+
         return c
 
     def draw_bong_front(self, c, bong):
@@ -191,5 +228,19 @@ class BongGenerator:
         c.setFont("Helvetica-Bold", 16)
         c.drawCentredString(0, -6, f"{id}-{control_number}")
         c.restoreState()
+        return c
+
+    def draw_checking_page_tile(self, c, bong):
+
+        id = bong.get("id")[-3:]
+        control_number = bong.get("control_number")
+
+        c.rect(0, - box_size, box_size, box_size)
+
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(3, -12, f"{id}")
+        c.setFont("Helvetica", 10)
+        c.drawString(3, -22, f"{control_number}")
+
         return c
 

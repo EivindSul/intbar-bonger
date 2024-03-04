@@ -1,6 +1,5 @@
 # Simple file to learn and test functionality of reportlab
 from reportlab.lib.utils import ImageReader
-from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 
@@ -69,7 +68,6 @@ def draw_bongs():
 def draw_bong_front(c):
     c.roundRect(0, 0, bong_size_x, bong_size_y, 5)
     c.rect(0, id_box_size, bong_size_x, bong_size_y - 2 * id_box_size)
-    # Write text
     c.saveState()
     c.setFillColorRGB(*black)
     c.translate(bong_size_x / 2, bong_size_y / 2)
@@ -89,7 +87,6 @@ def draw_bong_front(c):
 
 def draw_bong_back(c):
     c.roundRect(0, 0, bong_size_x, bong_size_y, 5)
-    # Write text
     c.saveState()
     c.setFillColorRGB(*black)
     c.translate(bong_size_x / 2, bong_size_y / 2)
