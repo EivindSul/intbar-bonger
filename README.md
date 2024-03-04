@@ -4,8 +4,36 @@ Program til å lage PDF'er med bonger til utskrift.
 Lager forside, bakside, og et sjekke-ark med de samme bongene.
 
 ## Bruk
-TODO:
-Gjør den brukbar
+For nå brukes programmet kun i terminal.
+
+Installer conda. Jeg anbefaler [miniconda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
+
+Klon prosjektet med git.
+```bash
+git clone git@github.com:EivindSul/intbar-bonger.git
+```
+Aktiver conda environment for å installere de nødvendige pakkene.
+```bash
+# Gå til mappen
+cd intbar-bonger
+
+# Aktiver environment
+conda env create -f environment.yml
+conda activate intbar-bonger-env
+```
+
+Nå skal programmet være klart til å kjøres.
+
+Hovedprogrammet heter intbar-bonger.py.
+
+```bash
+python intbar-bonger.py
+```
+Programmet gir en gjennomgang av de forskjellige feltene på bongen.
+Om du lar feltet stå tomt, så bruker det standardverdiene som står beskrevet når du kjører programmet.
+VÆr obs på at enkelte input kan få bongene til å se stygge ut, for eksempel at "serie" blir mer enn tre tegn langt.
+
+Bongene blir lagret som en pdf-fil i samme mappe.
 
 ## Utvikling og vedlikehold
 Dette programmet er skrevet i python med hensikten at det skal kunne bli
