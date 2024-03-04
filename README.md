@@ -6,6 +6,18 @@ Lager forside, bakside, og et sjekke-ark med de samme bongene.
 ## Bruk
 For nå brukes programmet kun i terminal.
 
+Programmet bruker reportlab. Installer det gjennom pip eller conda. 
+
+### Gjennom pip
+Kjør denne kommandoen i terminalen.
+```bash
+pip install reportlab
+```
+Kommandoen kan være litt annerledes, for eksempel pip3 i stedet for pip.
+
+Hvis det ikke fungerer, så er kanskje conda en bedre løsning. Prøv det i stedet.
+
+### Gjennom conda
 Installer conda. Jeg anbefaler [miniconda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
 Klon prosjektet med git.
@@ -22,6 +34,7 @@ conda env create -f environment.yml
 conda activate intbar-bonger-env
 ```
 
+### Kjøring av programmet
 Nå skal programmet være klart til å kjøres.
 
 Hovedprogrammet heter intbar-bonger.py.
