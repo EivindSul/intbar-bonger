@@ -6,6 +6,11 @@ Lager forside, bakside, og et sjekke-ark med de samme bongene.
 ## Bruk
 For nå brukes programmet kun i terminal.
 
+Begynn med å klone prosjektet med git.
+```bash
+git clone git@github.com:EivindSul/intbar-bonger.git
+
+```
 Programmet bruker reportlab. Installer det gjennom pip eller conda. 
 
 ### Gjennom pip
@@ -20,10 +25,6 @@ Hvis det ikke fungerer, så er kanskje conda en bedre løsning. Prøv det i sted
 ### Gjennom conda
 Installer conda. Jeg anbefaler [miniconda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
-Klon prosjektet med git.
-```bash
-git clone git@github.com:EivindSul/intbar-bonger.git
-```
 Aktiver conda environment for å installere de nødvendige pakkene.
 ```bash
 # Gå til mappen
