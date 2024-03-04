@@ -33,6 +33,6 @@ else:
 if expiration == "":
     expiration = None
 
-bg = bong_generator.BongGenerator(count=count, series=series, value=value, expiration=expiration)
+bg = bong_generator.BongGenerator(count=count, series=series, description=description, value=value, expiration=expiration)
 bg.generate_pdf()
 
